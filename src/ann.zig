@@ -1,7 +1,7 @@
 //! Local ANN building block for codedb semantic retrieval.
 //!
 //! This wraps OpenPuffer's pure-Zig HNSW engine. It deliberately imports only
-//! the in-process index module: no HTTP server, object storage, Gemini client,
+//! the in-process index module: no HTTP server, object storage, embedding-provider client,
 //! or turbopuffer client is linked into codedb.
 
 const std = @import("std");

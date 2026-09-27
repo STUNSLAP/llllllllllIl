@@ -100,7 +100,7 @@ command returns the local result and does not run an embedding model on CPU.
 default; `--local` (or `--no-semantic`) is the explicit on-device-only mode.
 
 `semantic-index` is the explicit ANN build trigger. It sends bounded 832-byte
-code chunks using four concurrent 25-item requests by default (configurable
+code chunks using eight concurrent 100-item requests by default (configurable
 from one to eight) and stores a small mapping plus a generation-named,
 validated `.hmls` mmap slab under codedb's local per-project data directory
 (0700/0600 on POSIX).
@@ -161,7 +161,7 @@ codedb-cli stop                       # stop daemon
 | `CODEDB_EMBEDDINGS_DIMENSIONS` | managed | Requested custom-provider dimensions (64-4096) |
 | `CODEDB_EMBEDDINGS_TOKEN` | unset | Optional legacy bearer token for protected/custom endpoints; the hosted lane enrolls automatically |
 | `CODEDB_EMBEDDINGS_TIMEOUT_MS` | `15000` | Per-request deadline in milliseconds (10-120000) |
-| `CODEDB_SEMANTIC_INDEX_CONCURRENCY` | `4` | Parallel 25-item index batches (clamped to 1-8) |
+| `CODEDB_SEMANTIC_INDEX_CONCURRENCY` | `8` | Parallel 100-item index batches (clamped to 1-8) |
 
 ## Performance
 

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.2.5860 - 2026-09-27
+
+- `codedb semantic-index` sends larger batches with more requests in flight, so hosted index builds finish faster.
+- Index builds wait out hosted rate limits with a longer capped backoff instead of failing after a few quick retries. Interactive `codedb context` calls still fail fast to local results.
+
 ## 0.2.5859 - 2026-09-27
 
 - Fix `codedb context` reporting `semantic lane: unavailable` with the default hosted configuration. The hosted default model id is now `codedb-hosted-v1`. Local ANN sidecars built by earlier releases are rebuilt once in the background; custom endpoints and model overrides are unchanged.

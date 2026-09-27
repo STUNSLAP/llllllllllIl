@@ -489,7 +489,7 @@ endpoints/model overrides and new repositories are never auto-built; set
 never mixes vectors from different models.
 
 It splits already-indexable files into bounded 832-byte source chunks, uses
-four concurrent 25-item requests by default (explicitly configurable from one
+eight concurrent 100-item requests by default (explicitly configurable from one
 to eight), and writes a
 small `semantic-chunks-v3.meta` mapping plus a generation-named `.hmls` mmap
 slab only in codedb's per-project local data directory. The directory and

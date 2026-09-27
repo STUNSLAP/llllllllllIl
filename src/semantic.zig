@@ -21,19 +21,22 @@ pub const default_timeout_ms: u32 = 15_000;
 pub const min_timeout_ms: u32 = 10;
 pub const max_timeout_ms: u32 = 120_000;
 pub const max_documents: usize = 24;
-// The free public codedb lane accepts at most 25 inputs per request. Indexing
-// may fill all 25 slots because, unlike query reranking, it does not prepend a
-// query vector to the batch.
-pub const max_index_documents: usize = 25;
+// The hosted lane accepts at most 100 inputs per request, the provider's own
+// batch ceiling. Larger batches cut per-item latency and round trips; query
+// reranking stays bounded separately by `max_documents`.
+pub const max_index_documents: usize = 100;
 pub const max_document_bytes: usize = 2 * 1024;
-// Keep the serialized anonymous request below Caddy's 64 KiB raw-body cap even
+// Keep the serialized request below the hosted edge's 256 KiB body cap even
 // when source punctuation/control bytes expand during JSON escaping.
 pub const max_batch_text_bytes: usize = 8 * 1024;
-pub const max_request_bytes: usize = 60 * 1024;
+pub const max_request_bytes: usize = 240 * 1024;
 pub const max_response_bytes: usize = 2 * 1024 * 1024;
-pub const max_index_batch_text_bytes: usize = 25 * 1024;
-pub const max_index_embedding_attempts: usize = 3;
+pub const max_index_batch_text_bytes: usize = 100 * 1024;
+// Hosted quota windows are per minute. Ten attempts with doubling backoff
+// capped at 30s wait about 92s in total, enough to outlast one window.
+pub const max_index_embedding_attempts: usize = 10;
 pub const index_embedding_retry_base_ms: u32 = 250;
+pub const index_embedding_retry_max_ms: u32 = 30_000;
 pub const default_rrf_k: f32 = 60;
 pub const default_semantic_weight: f32 = 0.05;
 // Accuracy-oriented Jina hybrid policy; see ADR 0008 for live-service
@@ -494,12 +497,30 @@ pub fn embedIndexRemoteTexts(
                 err == error.EmbeddingProviderUnavailable or
                 err == error.EmbeddingTimeout;
             if (!retryable or attempt + 1 == max_index_embedding_attempts) return err;
-            const delay_ms = index_embedding_retry_base_ms << @intCast(attempt);
+            const delay_ms = indexRetryDelayMs(attempt);
             io.sleep(.fromMilliseconds(delay_ms), .awake) catch {};
             continue;
         };
     }
     unreachable;
+}
+
+pub fn indexRetryDelayMs(attempt: usize) u32 {
+    const shift: u5 = @intCast(@min(attempt, 16));
+    const scaled = @as(u64, index_embedding_retry_base_ms) << shift;
+    return @intCast(@min(scaled, index_embedding_retry_max_ms));
+}
+
+test "index retry backoff doubles, caps, and outlasts a one-minute quota window" {
+    const testing = std.testing;
+    try testing.expectEqual(@as(u32, 250), indexRetryDelayMs(0));
+    try testing.expectEqual(@as(u32, 500), indexRetryDelayMs(1));
+    try testing.expectEqual(index_embedding_retry_max_ms, indexRetryDelayMs(8));
+    try testing.expectEqual(index_embedding_retry_max_ms, indexRetryDelayMs(40));
+    var total: u64 = 0;
+    for (0..max_index_embedding_attempts - 1) |attempt| total += indexRetryDelayMs(attempt);
+    try testing.expect(total >= 60_000);
+    try testing.expect(total <= 120_000);
 }
 
 pub fn embedQueryRemote(

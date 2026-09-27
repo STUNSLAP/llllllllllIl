@@ -46,7 +46,7 @@ pub fn build(b: *std.Build) void {
     exe.root_module.addImport("nanoregex", nanoregex_dep.module("nanoregex"));
 
     // ── OpenPuffer local ANN dependency ──
-    // Only the pure-Zig library root is linked. Server, S3, Gemini, and
+    // Only the pure-Zig library root is linked. Server, S3, embedding-provider, and
     // turbopuffer client modules remain outside codedb's graph.
     const openpuffer_dep = b.dependency("openpuffer", .{ .target = target, .optimize = optimize });
     const openpuffer_mod = openpuffer_dep.module("openpuffer");

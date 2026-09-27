@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.2.5859 - 2026-09-27
+
+- Fix `codedb context` reporting `semantic lane: unavailable` with the default hosted configuration. The hosted default model id is now `codedb-hosted-v1`. Local ANN sidecars built by earlier releases are rebuilt once in the background; custom endpoints and model overrides are unchanged.
+
 ## 0.2.5857 - 2026-09-26
 
 - Auto-register codedb in additional detected MCP clients: oh-my-pi, Hermes, Qwen Code, ZCode, Trae, Cline, Copilot CLI, Antigravity, Kiro, and OpenCode. `codedb nuke` removes the matching entries. Invalid JSON is left untouched.

@@ -30,7 +30,8 @@
   <a href="#-mcp-tools">Tools</a> ·
   <a href="#-benchmarks">Benchmarks</a> ·
   <a href="#-data--privacy">Data & privacy</a> ·
-  <a href="https://codegraff.com/#codedb">Meet the family ↗</a>
+  <a href="#-use-codedb-in-harness">Harness</a> ·
+  <a href="https://codegraff.com/codedb?from=codedb-readme">Meet the family ↗</a>
 </p>
 
 Your agent has a task. Somewhere in your repository are the definition it needs,
@@ -117,6 +118,27 @@ curl -fsSL https://codedb.codegraff.com/install.sh | bash
 This replaces the `codedb` binary with the latest GitHub Release and keeps your existing MCP registrations, config, caches, and snapshots. Use this path for any release whose built-in updater cannot fetch release checksums.
 
 Self-update works on native Windows from 0.2.5833 onward (`codedb update`). On older builds, rerun the PowerShell installer above to update or repair the binary.
+
+## 🪟 Use codedb in Harness
+
+<p align="center">
+  <a href="https://codegraff.com/harness?from=codedb-readme">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://codegraff.com/harness/harness-demo-dark.webp" />
+      <img src="https://codegraff.com/harness/harness-demo-light.webp" alt="Harness, the desktop app for coding agents, ready for a new session" width="720" />
+    </picture>
+  </a>
+</p>
+
+[Harness](https://codegraff.com/harness?from=codedb-readme) is a free desktop app for
+macOS and Windows that runs Graff, Claude Code, Codex, Cursor, and your other
+coding agents in one window, with each session's files, browser, and terminal
+beside it. The agents you run there use their usual MCP configuration, so the
+codedb registration from the installer carries over: install codedb once, and
+every agent in Harness can use the map.
+
+An iPhone and iPad app for following and steering those sessions is in
+development. [Join the waitlist](https://codegraff.com/harness?from=codedb-readme#ios).
 
 ## 🌱 Project status
 
